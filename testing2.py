@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 from sqlalchemy import create_engine
+import plotly.graph_objects as go
 
 import dash
 from dash import dcc, html
@@ -30,7 +31,7 @@ query = "SELECT * FROM new_tsla;"
 df2 = pd.read_sql_query(query, engine)
 df2['date'] = pd.to_datetime(df2['Date'])  # Align with SQL column
 df2.drop(columns=['Date'], inplace=True)
-
+print(df2.columns)
 # Dash app
 app = dash.Dash(__name__)
 
@@ -83,22 +84,33 @@ def toggle_year_dropdown(stat_type):
 )
 def update_output(stat_type, year):
     if stat_type == 'All Years Statistics':
+        # Column Names: Index(['Adj Close', 'Close', 'High', 'Low', 'Open', 'Volume', 'date'], dtype='object')
         # Candlestick Chart
+        fig1 = go.Figure(data=[go.Candlestick(x=df2['date'],
+                                             open=df['Open'],
+                                             high=df['High'],
+                                             low=df['Low'],
+                                             close=df['Adj Close'], )])
 
-
-
-
+        fig1.update_layout(
+            title='Tesla Stock Candlestick Chart',
+            yaxis_title='Price',
+            xaxis_title='Date',
+            xaxis_rangeslider_visible=True,
+            width=1000,  # Set the desired width in pixels
+            height=700  # Set the desired height in pixels
+        )
 
         # Volume Chart
         df2['Year'] = df2['date'].dt.year
         yearly_volume = df2.groupby('Year')['Volume'].mean().reset_index()
 
-        fig = px.area(yearly_volume, x='Year', y='Volume',
-                      title='Average Tesla Trading Volume Per Year (2010–2025)', width=600,
-              height=400,
+        fig2 = px.area(yearly_volume, x='Year', y='Volume',
+                      title='Average Tesla Trading Volume Per Year (2010–2025)', width=800,
+              height=500,
                       markers=True)
 
-        return [dcc.Graph(figure=fig)]
+        return [dcc.Graph(figure=fig1), dcc.Graph(figure=fig2)]
 
     elif stat_type == 'Yearly Statistics' and year:
         year_data = df2[df2['date'].dt.year == year]
