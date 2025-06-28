@@ -97,7 +97,7 @@ def update_output(stat_type, year):
             yaxis_title='Price',
             xaxis_title='Date',
             xaxis_rangeslider_visible=True,
-            width=1000,
+            width=1900,
             height=700
         )
 
@@ -105,7 +105,7 @@ def update_output(stat_type, year):
         df2['Year'] = df2['date'].dt.year
         yearly_volume = df2.groupby('Year')['Volume'].mean().reset_index()
         fig2 = px.area(yearly_volume, x='Year', y='Volume',
-                      title='Average Tesla Trading Volume Per Year (2010–2025)', width=1000,
+                      title='Average Tesla Trading Volume Per Year (2010–2025)', width=1900,
               height=700,
                       markers=True)
 
@@ -126,14 +126,36 @@ def update_output(stat_type, year):
             color_discrete_map={'Positive': 'green', 'Negative': 'red'}
         ).update_layout(
             title="Average Daily Returns Per Year",
-            yaxis_title='Percent Daily Return',
+            yaxis_title='Percent Daily Return (%)',
             xaxis_title='Year',
             legend_title_text="Return Category",
-            width=1000,
-            height=700
+            width=1900,
+            height=700,
+            yaxis = dict(tickformat=".2f%")
         )
 
-        return [dcc.Graph(figure=fig1), dcc.Graph(figure=fig2), dcc.Graph(figure=fig3)]
+        # Volatility Chart
+        #df2['rolling_volatility_30d'] = df2['daily_return'].rolling(window=30).std()
+        #fig4 = px.line(df2, x='date', y='rolling_volatility_30d',
+                     #title='30-Day Rolling Volatility of Tesla Stock',
+                      #labels={'rolling_volatility': 'Volatility (%)', 'index': 'Date'})
+
+        # Drawdown Chart
+        df2['Cumulative Max'] = df2['Adj Close'].cummax()
+        df2['Drawdown'] = (df2['Adj Close'] / df2['Cumulative Max'] - 1) * 100
+        fig4 = px.area(df2, x='date', y='Drawdown',
+        title='Tesla Drawdowns Over All Years')
+        # labels={'rolling_volatility': 'Volatility (%)', 'index': 'Date'})
+        fig4.update_layout(
+        yaxis_title = 'Percent Drawdown (%)',
+        xaxis_title = 'Date',
+        width=1900,
+        height=700
+        )
+
+
+
+        return [dcc.Graph(figure=fig1), dcc.Graph(figure=fig2), dcc.Graph(figure=fig3), dcc.Graph(figure=fig4)]
 
     elif stat_type == 'Yearly Statistics' and year:
         year_data = df2[df2['date'].dt.year == year]
@@ -150,13 +172,13 @@ def update_output(stat_type, year):
             yaxis_title='Price',
             xaxis_title='Date',
             xaxis_rangeslider_visible=True,
-            width=1000,
+            width=1900,
             height=700
         )
 
         # Volume Chart
         fig2_year = px.area(year_data, x='date', y='Volume',
-                      title=f'Daily Trading Volume for {year}',width=1000,
+                      title=f'Daily Trading Volume for {year}',width=1900,
               height=700)
 
 
@@ -175,16 +197,28 @@ def update_output(stat_type, year):
             color_discrete_map={'Positive': 'green', 'Negative': 'red'}
         ).update_layout(
             title=f"Average Daily Returns for {year}",
-            yaxis_title='Percent Daily Return',
+            yaxis_title='Percent Daily Return (%)',
             xaxis_title='Year',
             legend_title_text="Return Category",
-            width=1000,
+            width=1900,
+            height=700,
+            yaxis=dict(tickformat=".2f%")
+        )
+
+        # Drawdown Chart
+        year_data['Cumulative Max'] = year_data['Adj Close'].cummax()
+        year_data['Drawdown'] = (year_data['Adj Close'] / year_data['Cumulative Max'] - 1) * 100
+        fig4_year = px.area(year_data, x='date', y='Drawdown',
+                       title=f'Tesla Drawdowns for {year}')
+
+        fig4_year.update_layout(
+            yaxis_title='Percent Drawdown (%)',
+            xaxis_title='Date',
+            width=1900,
             height=700
         )
 
-
-
-        return [dcc.Graph(figure=fig1_year), dcc.Graph(figure=fig2_year), dcc.Graph(figure=fig3_year)]
+        return [dcc.Graph(figure=fig1_year), dcc.Graph(figure=fig2_year), dcc.Graph(figure=fig3_year), dcc.Graph(figure=fig4_year)]
 
     return []
 
