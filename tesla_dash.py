@@ -138,6 +138,7 @@ def update_output(stat_type, year):
     elif stat_type == 'Yearly Statistics' and year:
         year_data = df2[df2['date'].dt.year == year]
 
+        # Candlestick Chart
         fig1_year = go.Figure(data=[go.Candlestick(x=year_data['date'],
                                               open=year_data['Open'],
                                               high=year_data['High'],
@@ -153,14 +154,37 @@ def update_output(stat_type, year):
             height=700
         )
 
+        # Volume Chart
         fig2_year = px.area(year_data, x='date', y='Volume',
-                      title=f'Daily Trading Volume for {year}',width=800,
-              height=500)
+                      title=f'Daily Trading Volume for {year}',width=1000,
+              height=700)
+
+
+        # Daily Return Per Year
+        year_data['daily_return'] = year_data['Adj Close'].pct_change() * 100
+        yearly_return2 = year_data.groupby('date')['daily_return'].mean().reset_index()
+        yearly_return2['return_category'] = yearly_return2['daily_return'].apply(
+            lambda x: 'Positive' if x > 0 else 'Negative'
+        )
+
+        fig3_year = px.bar(
+            yearly_return2,
+            x='date',
+            y='daily_return',
+            color='return_category',
+            color_discrete_map={'Positive': 'green', 'Negative': 'red'}
+        ).update_layout(
+            title=f"Average Daily Returns for {year}",
+            yaxis_title='Percent Daily Return',
+            xaxis_title='Year',
+            legend_title_text="Return Category",
+            width=1000,
+            height=700
+        )
 
 
 
-
-        return [dcc.Graph(figure=fig1_year), dcc.Graph(figure=fig2_year)]
+        return [dcc.Graph(figure=fig1_year), dcc.Graph(figure=fig2_year), dcc.Graph(figure=fig3_year)]
 
     return []
 
