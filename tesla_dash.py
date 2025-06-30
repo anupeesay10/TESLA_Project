@@ -112,7 +112,7 @@ def update_output(stat_type, year):
 
         # Daily Return Chart
         df2['year'] = df2['date'].dt.year
-        df2['daily_return'] = df2['Adj Close'].pct_change() * 100
+        df2['daily_return'] = (df2['Adj Close'].pct_change()) * 100
         yearly_return = df2.groupby('year')['daily_return'].mean().reset_index()
         yearly_return['return_category'] = yearly_return['daily_return'].apply(
             lambda x: 'Positive' if x > 0 else 'Negative'
@@ -130,8 +130,8 @@ def update_output(stat_type, year):
             xaxis_title='Year',
             legend_title_text="Return Category",
             width=1900,
-            height=700,
-            yaxis = dict(tickformat=".2f%")
+            height=700
+            #yaxis = dict(tickformat=".2f")
         )
 
         # Volatility Chart
@@ -183,7 +183,7 @@ def update_output(stat_type, year):
 
 
         # Daily Return Per Year
-        year_data['daily_return'] = year_data['Adj Close'].pct_change() * 100
+        year_data['daily_return'] = (year_data['Adj Close'].pct_change()) * 100
         yearly_return2 = year_data.groupby('date')['daily_return'].mean().reset_index()
         yearly_return2['return_category'] = yearly_return2['daily_return'].apply(
             lambda x: 'Positive' if x > 0 else 'Negative'
@@ -201,8 +201,8 @@ def update_output(stat_type, year):
             xaxis_title='Year',
             legend_title_text="Return Category",
             width=1900,
-            height=700,
-            yaxis=dict(tickformat=".2f%")
+            height=700
+            #yaxis=dict(tickformat=".2f")
         )
 
         # Drawdown Chart
