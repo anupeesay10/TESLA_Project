@@ -134,11 +134,6 @@ def update_output(stat_type, year):
             #yaxis = dict(tickformat=".2f")
         )
 
-        # Volatility Chart
-        #df2['rolling_volatility_30d'] = df2['daily_return'].rolling(window=30).std()
-        #fig4 = px.line(df2, x='date', y='rolling_volatility_30d',
-                     #title='30-Day Rolling Volatility of Tesla Stock',
-                      #labels={'rolling_volatility': 'Volatility (%)', 'index': 'Date'})
 
         # Drawdown Chart
         df2['Cumulative Max'] = df2['Adj Close'].cummax()
