@@ -7,4 +7,5 @@ The goal for this project is to take all of Tesla's stock data from its first re
 and give a general summary on its overall trend. We will also see how it has been doing in recent years. In doing so, we give an honest prediction on how Tesla stocks will do for the remainder of the year (as of June 2025).
 
 The tools used in this project are PostgreSQL for data storage and extraction, Dash, as well as many libraries that are found in "requirements.txt".
+I hope you enjoy this project!
 
