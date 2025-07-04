@@ -31,7 +31,6 @@ query = "SELECT * FROM new_tsla;"
 df2 = pd.read_sql_query(query, engine)
 df2['date'] = pd.to_datetime(df2['Date'])  # Align with SQL column
 df2.drop(columns=['Date'], inplace=True)
-print(df2.columns)
 # Dash app
 app = dash.Dash(__name__)
 
@@ -140,7 +139,6 @@ def update_output(stat_type, year):
         df2['Drawdown'] = (df2['Adj Close'] / df2['Cumulative Max'] - 1) * 100
         fig4 = px.area(df2, x='date', y='Drawdown',
         title='Tesla Drawdowns Over All Years')
-        # labels={'rolling_volatility': 'Volatility (%)', 'index': 'Date'})
         fig4.update_layout(
         yaxis_title = 'Percent Drawdown (%)',
         xaxis_title = 'Date',
@@ -197,7 +195,6 @@ def update_output(stat_type, year):
             legend_title_text="Return Category",
             width=1900,
             height=700
-            #yaxis=dict(tickformat=".2f")
         )
 
         # Drawdown Chart
