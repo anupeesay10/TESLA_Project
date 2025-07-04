@@ -8,5 +8,14 @@ and give a general summary on its overall trend. We will also see how it has bee
 
 The tools used in this project are PostgreSQL for data storage and extraction, Dash, as well as many libraries that are found in "requirements.txt".
 
+Follow these steps below to view the project:
+1. Clone the repository
+2. Open the project on an IDE of your choice
+3.  Ensure all packages are installed.
+4. Run "tesla_dash.py".
+5. Open the project in Jupyter
+6. Open "TESLA.ipynb" to view the analysis.
+
+
 I hope you enjoy this project!
 
