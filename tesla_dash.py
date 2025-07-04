@@ -108,6 +108,8 @@ def update_output(stat_type, year):
               height=700,
                       markers=True)
 
+        fig2.update_layout(xaxis_title='Date')
+
 
         # Daily Return Chart
         df2['year'] = df2['date'].dt.year
@@ -126,7 +128,7 @@ def update_output(stat_type, year):
         ).update_layout(
             title="Average Daily Returns Per Year",
             yaxis_title='Percent Daily Return (%)',
-            xaxis_title='Year',
+            xaxis_title='Date',
             legend_title_text="Return Category",
             width=1900,
             height=700
@@ -174,8 +176,10 @@ def update_output(stat_type, year):
                       title=f'Daily Trading Volume for {year}',width=1900,
               height=700)
 
+        fig2_year.update_layout(xaxis_title='Date')
 
-        # Daily Return Per Year
+
+        # Daily Return for given Year
         year_data['daily_return'] = (year_data['Adj Close'].pct_change()) * 100
         yearly_return2 = year_data.groupby('date')['daily_return'].mean().reset_index()
         yearly_return2['return_category'] = yearly_return2['daily_return'].apply(
@@ -191,7 +195,7 @@ def update_output(stat_type, year):
         ).update_layout(
             title=f"Average Daily Returns for {year}",
             yaxis_title='Percent Daily Return (%)',
-            xaxis_title='Year',
+            xaxis_title='Date',
             legend_title_text="Return Category",
             width=1900,
             height=700
